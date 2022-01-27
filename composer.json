@@ -1,0 +1,40 @@
+{
+  "name": "clicktonext/kirby-pwa",
+  "description": "Turns your project into a PWA (progressive web app) for Kirby 3.",
+  "type": "kirby-plugin",
+  "version": "1.0.0",
+  "license": "MIT",
+  "keywords": [
+    "kirby",
+    "kirby-3",
+    "kirby3-plugin",
+    "kirby-plugin",
+    "clicktonext-plugin",
+    "kirby-pwa",
+    "pwa",
+    "progressive-web-app"
+  ],
+  "homepage": "https://clicktonext.com",
+  "support": {
+    "email": "support@clicktonext.com"
+  },
+  "authors": [
+    {
+      "name": "Click to Next",
+      "email": "contact@clicktonext.com",
+      "homepage": "https://clicktonext.com"
+    }
+  ],
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  },
+  "require": {
+    "php": "^7.4|^8.0",
+    "getkirby/composer-installer": "^1.2"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
+
