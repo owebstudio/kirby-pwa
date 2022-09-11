@@ -1,28 +1,29 @@
 {
-  "name": "clicktonext/kirby-pwa",
+  "name": "kirbynext/kirby-pwa",
   "description": "Turns your project into a PWA (progressive web app) for Kirby 3.",
   "type": "kirby-plugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "keywords": [
+    "kirbynext",
     "kirby",
     "kirby-3",
     "kirby3-plugin",
     "kirby-plugin",
-    "clicktonext-plugin",
+    "kirbynext-plugin",
     "kirby-pwa",
     "pwa",
     "progressive-web-app"
   ],
-  "homepage": "https://clicktonext.com",
+  "homepage": "https://kirbynext.com",
   "support": {
-    "email": "support@clicktonext.com"
+    "email": "support@kirbynext.com"
   },
   "authors": [
     {
-      "name": "Click to Next",
-      "email": "contact@clicktonext.com",
-      "homepage": "https://clicktonext.com"
+      "name": "Kirby Next",
+      "email": "contact@kirbynext.com",
+      "homepage": "https://kirbynext.com"
     }
   ],
   "config": {

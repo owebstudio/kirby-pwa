@@ -6,7 +6,7 @@ use Kirby\Http\Response;
 
 @include_once __DIR__ . '/helpers.php';
 
-Kirby::plugin('clicktonext/pwa', [
+Kirby::plugin('kirbynext/pwa', [
     'options' => [
         'enable' => false,
         'manifest' => [
@@ -37,8 +37,8 @@ Kirby::plugin('clicktonext/pwa', [
             'action' => function () {
                 $localManifestJson = kirby()->root('index') . '/manifest.json';
 
-                if (option('clicktonext.pwa.enable', false) === true) {
-                    $manifestJson = option('clicktonext.pwa.manifest.json');
+                if (option('kirbynext.pwa.enable', false) === true) {
+                    $manifestJson = option('kirbynext.pwa.manifest.json');
 
                     if ($manifestJson === null) {
                         if (F::exists($localManifestJson) === true) {
@@ -63,8 +63,8 @@ Kirby::plugin('clicktonext/pwa', [
             'action' => function () {
                 $localServiceWorker = kirby()->root('index') . '/serviceworker.js';
 
-                if (option('clicktonext.pwa.enable', false) === true) {
-                    $serviceworkerJs = option('clicktonext.pwa.serviceworker.js');
+                if (option('kirbynext.pwa.enable', false) === true) {
+                    $serviceworkerJs = option('kirbynext.pwa.serviceworker.js');
 
                     if ($serviceworkerJs === null) {
                         if (F::exists($localServiceWorker) === true) {

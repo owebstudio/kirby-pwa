@@ -36,7 +36,7 @@ You can use sample basic snippet of plugin:
 <?php
 
 return [
-    'clicktonext.pwa' => [
+    'kirbynext.pwa' => [
         'enable' => true,
         'manifest' => [
             'name' => 'Kirby PWA',
@@ -85,4 +85,4 @@ You can see the options and default values of the plugin in the table below. The
 | manifest.json | string&#124;closure  | null | Tells the browser about your PWA and how it should behave when installed on the user's desktop or mobile device |
 | serviceworker.js | string&#124;closure  | null | Script that your browser runs in the background, separate from a web page |
 
-All the values can be updated in the `config.php` file and prefixed with `clicktonext.pwa.`.
+All the values can be updated in the `config.php` file and prefixed with `kirbynext.pwa.`.
