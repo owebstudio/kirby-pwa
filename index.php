@@ -6,7 +6,7 @@ use Kirby\Http\Response;
 
 @include_once __DIR__ . '/helpers.php';
 
-Kirby::plugin('kirbynext/pwa', [
+Kirby::plugin('owebstudio/pwa', [
     'options' => [
         'enable' => false,
         'manifest' => [
@@ -37,8 +37,8 @@ Kirby::plugin('kirbynext/pwa', [
             'action' => function () {
                 $localManifestJson = kirby()->root('index') . '/manifest.json';
 
-                if (option('kirbynext.pwa.enable', false) === true) {
-                    $manifestJson = option('kirbynext.pwa.manifest.json');
+                if (option('owebstudio.pwa.enable', false) === true) {
+                    $manifestJson = option('owebstudio.pwa.manifest.json');
 
                     if ($manifestJson === null) {
                         if (F::exists($localManifestJson) === true) {
@@ -63,8 +63,8 @@ Kirby::plugin('kirbynext/pwa', [
             'action' => function () {
                 $localServiceWorker = kirby()->root('index') . '/serviceworker.js';
 
-                if (option('kirbynext.pwa.enable', false) === true) {
-                    $serviceworkerJs = option('kirbynext.pwa.serviceworker.js');
+                if (option('owebstudio.pwa.enable', false) === true) {
+                    $serviceworkerJs = option('owebstudio.pwa.serviceworker.js');
 
                     if ($serviceworkerJs === null) {
                         if (F::exists($localServiceWorker) === true) {

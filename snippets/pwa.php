@@ -1,4 +1,4 @@
-<?php if (option('kirbynext.pwa.enable', false) === true): ?>
+<?php if (option('owebstudio.pwa.enable', false) === true): ?>
     <?php $manifestOptions = $manifestOptions ?? optionsKirbyPwa(); ?>
     <!-- Start PWA Settings -->
 

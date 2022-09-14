@@ -30,11 +30,11 @@ function snippetKirbyPwa(array $data = [], bool $return = false): string
 function optionsKirbyPwa(): array
 {
     // get options
-    $manifest = option('kirbynext.pwa.manifest');
-    $icons = option('kirbynext.pwa.icons', []);
-    $splash = option('kirbynext.pwa.splash', []);
-    $shortcuts = option('kirbynext.pwa.shortcuts', []);
-    $custom = option('kirbynext.pwa.custom', []);
+    $manifest = option('owebstudio.pwa.manifest');
+    $icons = option('owebstudio.pwa.icons', []);
+    $splash = option('owebstudio.pwa.splash', []);
+    $shortcuts = option('owebstudio.pwa.shortcuts', []);
+    $custom = option('owebstudio.pwa.custom', []);
 
     $data = [
         'name' => $manifest['name'],
