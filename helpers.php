@@ -51,6 +51,17 @@ function fileKirbyPwa(string $path): ?string
 }
 
 /**
+ * @param string $path
+ * @return string
+ */
+function mimeKirbyPwa(string $path): string
+{
+    $extension = strtolower(F::extension($path));
+
+    return F::extensionToMime($extension) ?? 'image/' . $extension;
+}
+
+/**
  * @return array
  */
 function optionsKirbyPwa(): array
@@ -80,15 +91,13 @@ function optionsKirbyPwa(): array
     foreach ($icons as $size => $file) {
         if (is_string($file) === true) {
             $path = $file;
-            $fileInfo = pathinfo($path);
         } else {
             $path = $file['path'];
-            $fileInfo = pathinfo($path);
         }
 
         $data['icons'][] = [
             'src' => url($path),
-            'type' => 'image/' . $fileInfo['extension'],
+            'type' => mimeKirbyPwa($path),
             'sizes' => $size,
             'purpose' => $file['purpose'] ?? 'any'
         ];
@@ -110,11 +119,9 @@ function optionsKirbyPwa(): array
     $data['shortcuts'] = [];
     foreach ($shortcuts as $shortcut) {
         if (array_key_exists('icons', $shortcut) === true) {
-            $fileInfo = pathinfo($shortcut['icons']['src']);
-
             $shortcutIcons = [
                 'src' => url($shortcut['icons']['src']),
-                'type' => 'image/' . $fileInfo['extension'],
+                'type' => mimeKirbyPwa($shortcut['icons']['src']),
                 'purpose' => $shortcut['icons']['purpose']
             ];
         } else {
