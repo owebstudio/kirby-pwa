@@ -1,6 +1,6 @@
 # Kirby PWA
 
-Turns your project into a PWA (progressive web app) for Kirby 3.
+Turns your project into a PWA (progressive web app) for Kirby.
 
 ## What is PWA (Progressive web app)?
 
@@ -41,7 +41,7 @@ return [
         'manifest' => [
             'name' => 'Kirby PWA',
             'short_name' => 'PWA',
-            'description' => 'Turns your project into a PWA (progressive web app) for Kirby 3.',
+            'description' => 'Turns your project into a PWA (progressive web app) for Kirby.',
             'background_color' => '#ffffff',
             'theme_color' => '#000000',
             'display' => 'fullscreen',
@@ -86,3 +86,16 @@ You can see the options and default values of the plugin in the table below. The
 | serviceworker.js | string&#124;closure  | null | Script that your browser runs in the background, separate from a web page |
 
 All the values can be updated in the `config.php` file and prefixed with `owebstudio.pwa.`.
+
+A string value for `manifest.json` or `serviceworker.js` is the path to your own file, either absolute or relative to the root folder of your site (e.g. `assets/pwa/manifest.json`).
+
+A splash screen can also be an array with its own media query:
+
+```php
+'splash' => [
+    '1170x2532' => [
+        'path' => 'assets/images/icons/splash-1170x2532.png',
+        'media' => '(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)'
+    ],
+],
+```

@@ -1,5 +1,6 @@
 <?php
 
+use Kirby\Filesystem\F;
 use Kirby\Toolkit\A;
 use Kirby\Toolkit\I18n;
 
@@ -9,19 +10,55 @@ use Kirby\Toolkit\I18n;
  * @param null $default
  * @return array|mixed
  */
-function getArrayLastItem(array $array = [], string $key, $default = null)
+function getArrayLastItem(array $array, string $key, $default = null)
 {
-    return A::get(end($array), $key, $default = null);
+    $item = end($array);
+
+    if (is_array($item) === false) {
+        return $default;
+    }
+
+    return A::get($item, $key, $default);
 }
 
 /**
  * @param array $data
  * @param false $return
- * @return string
+ * @return string|null
  */
-function snippetKirbyPwa(array $data = [], bool $return = false): string
+function snippetKirbyPwa(array $data = [], bool $return = false): ?string
 {
     return snippet('pwa', $data, $return);
+}
+
+/**
+ * @param string $path
+ * @return string|null
+ */
+function fileKirbyPwa(string $path): ?string
+{
+    $file = kirby()->root('index') . '/' . ltrim($path, '/');
+
+    if (F::exists($file) === true) {
+        return $file;
+    }
+
+    if (F::exists($path) === true) {
+        return $path;
+    }
+
+    return null;
+}
+
+/**
+ * @param string $path
+ * @return string
+ */
+function mimeKirbyPwa(string $path): string
+{
+    $extension = strtolower(F::extension($path));
+
+    return F::extensionToMime($extension) ?? 'image/' . $extension;
 }
 
 /**
@@ -54,15 +91,13 @@ function optionsKirbyPwa(): array
     foreach ($icons as $size => $file) {
         if (is_string($file) === true) {
             $path = $file;
-            $fileInfo = pathinfo($path);
         } else {
             $path = $file['path'];
-            $fileInfo = pathinfo($path);
         }
 
         $data['icons'][] = [
             'src' => url($path),
-            'type' => 'image/' . $fileInfo['extension'],
+            'type' => mimeKirbyPwa($path),
             'sizes' => $size,
             'purpose' => $file['purpose'] ?? 'any'
         ];
@@ -84,25 +119,25 @@ function optionsKirbyPwa(): array
     $data['shortcuts'] = [];
     foreach ($shortcuts as $shortcut) {
         if (array_key_exists('icons', $shortcut) === true) {
-            $fileInfo = pathinfo($shortcut['icons']['src']);
-
             $shortcutIcons = [
-                'src' => url($shortcut['icons']['src']),
-                'type' => 'image/' . $fileInfo['extension'],
-                'purpose' => $shortcut['icons']['purpose']
+                [
+                    'src' => url($shortcut['icons']['src']),
+                    'type' => mimeKirbyPwa($shortcut['icons']['src']),
+                    'purpose' => $shortcut['icons']['purpose'] ?? 'any'
+                ]
             ];
         } else {
             $shortcutIcons = [];
         }
 
-        $data['shortcuts'][] = [
+        $data['shortcuts'][] = array_filter([
             'name' => I18n::translate($shortcut['name'], $shortcut['name']),
-            'description' => I18n::translate($shortcut['description'], $shortcut['description']),
+            'description' => isset($shortcut['description']) === true ? I18n::translate($shortcut['description'], $shortcut['description']) : null,
             'url' => url($shortcut['url']),
-            'icons' => [
-                $shortcutIcons
-            ]
-        ];
+            'icons' => $shortcutIcons
+        ], function ($value) {
+            return $value !== null;
+        });
     }
 
     // custom options
