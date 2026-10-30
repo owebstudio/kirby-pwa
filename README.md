@@ -86,3 +86,5 @@ You can see the options and default values of the plugin in the table below. The
 | serviceworker.js | string&#124;closure  | null | Script that your browser runs in the background, separate from a web page |
 
 All the values can be updated in the `config.php` file and prefixed with `owebstudio.pwa.`.
+
+A string value for `manifest.json` or `serviceworker.js` is the path to your own file, either absolute or relative to the root folder of your site (e.g. `assets/pwa/manifest.json`).

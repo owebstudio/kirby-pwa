@@ -1,5 +1,6 @@
 <?php
 
+use Kirby\Filesystem\F;
 use Kirby\Toolkit\A;
 use Kirby\Toolkit\I18n;
 
@@ -28,6 +29,25 @@ function getArrayLastItem(array $array, string $key, $default = null)
 function snippetKirbyPwa(array $data = [], bool $return = false): ?string
 {
     return snippet('pwa', $data, $return);
+}
+
+/**
+ * @param string $path
+ * @return string|null
+ */
+function fileKirbyPwa(string $path): ?string
+{
+    $file = kirby()->root('index') . '/' . ltrim($path, '/');
+
+    if (F::exists($file) === true) {
+        return $file;
+    }
+
+    if (F::exists($path) === true) {
+        return $path;
+    }
+
+    return null;
 }
 
 /**

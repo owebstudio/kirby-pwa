@@ -51,6 +51,14 @@ Kirby::plugin('owebstudio/pwa', [
                     if (is_a($manifestJson, 'Closure') === true) {
                         return $manifestJson();
                     }
+
+                    if (is_string($manifestJson) === true) {
+                        $manifestFile = fileKirbyPwa($manifestJson);
+
+                        if ($manifestFile !== null) {
+                            return Response::file($manifestFile);
+                        }
+                    }
                 } else {
                     if (F::exists($localManifestJson) === true) {
                         return Response::file($localManifestJson);
@@ -76,6 +84,14 @@ Kirby::plugin('owebstudio/pwa', [
 
                     if (is_a($serviceworkerJs, 'Closure') === true) {
                         return $serviceworkerJs();
+                    }
+
+                    if (is_string($serviceworkerJs) === true) {
+                        $serviceworkerFile = fileKirbyPwa($serviceworkerJs);
+
+                        if ($serviceworkerFile !== null) {
+                            return Response::file($serviceworkerFile);
+                        }
                     }
                 } else {
                     if (F::exists($localServiceWorker) === true) {
