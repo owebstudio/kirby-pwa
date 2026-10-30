@@ -1,103 +1,58 @@
 <?php
 
 use Kirby\Cms\App as Kirby;
-use Kirby\Filesystem\F;
-use Kirby\Http\Response;
+use Owebstudio\Pwa\Pwa;
 
-@include_once __DIR__ . '/helpers.php';
+load([
+    'Owebstudio\\Pwa\\Pwa' => 'src/Pwa.php'
+], __DIR__);
 
 Kirby::plugin('owebstudio/pwa', [
     'options' => [
         'enable' => false,
-        'manifest' => [
-            'name' => 'Kirby PWA',
-            'short_name' => 'Kirby PWA',
-            'scope' => '.',
-            'start_url' => '.',
-            'description' => null,
-            'background_color' => '#ffffff',
-            'theme_color' => '#000000',
-            'display' => 'standalone',
-            'orientation' => 'any',
-            'status_bar' => 'black',
-        ],
+        'manifest' => [],
         'icons' => [],
         'splash' => [],
         'shortcuts' => [],
         'custom' => [],
+        'offline' => 'offline',
+        'precache' => [],
+        'exclude' => [],
+        'strategies' => [],
+        'limits' => [
+            'pages' => 50,
+            'assets' => 200
+        ],
+        'version' => null,
         'manifest.json' => null,
         'serviceworker.js' => null
     ],
     'snippets' => [
-        'pwa' => __DIR__ . '/snippets/pwa.php'
+        'pwa' => __DIR__ . '/snippets/pwa.php',
+        'pwa/offline' => __DIR__ . '/snippets/pwa/offline.php'
+    ],
+    'translations' => [
+        'de' => require __DIR__ . '/translations/de.php',
+        'en' => require __DIR__ . '/translations/en.php',
+        'tr' => require __DIR__ . '/translations/tr.php'
     ],
     'routes' => [
         [
             'pattern' => 'manifest.json',
             'action' => function () {
-                $localManifestJson = kirby()->root('index') . '/manifest.json';
-
-                if (option('owebstudio.pwa.enable', false) === true) {
-                    $manifestJson = option('owebstudio.pwa.manifest.json');
-
-                    if ($manifestJson === null) {
-                        if (F::exists($localManifestJson) === true) {
-                            return Response::file($localManifestJson);
-                        }
-
-                        return Response::json(optionsKirbyPwa(), null, true);
-                    }
-
-                    if (is_a($manifestJson, 'Closure') === true) {
-                        return $manifestJson();
-                    }
-
-                    if (is_string($manifestJson) === true) {
-                        $manifestFile = fileKirbyPwa($manifestJson);
-
-                        if ($manifestFile !== null) {
-                            return Response::file($manifestFile);
-                        }
-                    }
-                } else {
-                    if (F::exists($localManifestJson) === true) {
-                        return Response::file($localManifestJson);
-                    }
-                }
+                return Pwa::instance()->manifestResponse();
             }
         ],
         [
             'pattern' => 'serviceworker.js',
             'action' => function () {
-                $localServiceWorker = kirby()->root('index') . '/serviceworker.js';
-
-                if (option('owebstudio.pwa.enable', false) === true) {
-                    $serviceworkerJs = option('owebstudio.pwa.serviceworker.js');
-
-                    if ($serviceworkerJs === null) {
-                        if (F::exists($localServiceWorker) === true) {
-                            return Response::file($localServiceWorker);
-                        }
-
-                        return Response::file(__DIR__ . '/js/serviceworker.js');
-                    }
-
-                    if (is_a($serviceworkerJs, 'Closure') === true) {
-                        return $serviceworkerJs();
-                    }
-
-                    if (is_string($serviceworkerJs) === true) {
-                        $serviceworkerFile = fileKirbyPwa($serviceworkerJs);
-
-                        if ($serviceworkerFile !== null) {
-                            return Response::file($serviceworkerFile);
-                        }
-                    }
-                } else {
-                    if (F::exists($localServiceWorker) === true) {
-                        return Response::file($localServiceWorker);
-                    }
-                }
+                return Pwa::instance()->serviceWorkerResponse();
+            }
+        ],
+        [
+            'pattern' => 'pwa/offline',
+            'action' => function () {
+                return Pwa::instance()->offlineResponse();
             }
         ]
     ]
