@@ -23,9 +23,9 @@ function getArrayLastItem(array $array, string $key, $default = null)
 /**
  * @param array $data
  * @param false $return
- * @return string
+ * @return string|null
  */
-function snippetKirbyPwa(array $data = [], bool $return = false): string
+function snippetKirbyPwa(array $data = [], bool $return = false): ?string
 {
     return snippet('pwa', $data, $return);
 }
