@@ -120,22 +120,24 @@ function optionsKirbyPwa(): array
     foreach ($shortcuts as $shortcut) {
         if (array_key_exists('icons', $shortcut) === true) {
             $shortcutIcons = [
-                'src' => url($shortcut['icons']['src']),
-                'type' => mimeKirbyPwa($shortcut['icons']['src']),
-                'purpose' => $shortcut['icons']['purpose']
+                [
+                    'src' => url($shortcut['icons']['src']),
+                    'type' => mimeKirbyPwa($shortcut['icons']['src']),
+                    'purpose' => $shortcut['icons']['purpose'] ?? 'any'
+                ]
             ];
         } else {
             $shortcutIcons = [];
         }
 
-        $data['shortcuts'][] = [
+        $data['shortcuts'][] = array_filter([
             'name' => I18n::translate($shortcut['name'], $shortcut['name']),
-            'description' => I18n::translate($shortcut['description'], $shortcut['description']),
+            'description' => isset($shortcut['description']) === true ? I18n::translate($shortcut['description'], $shortcut['description']) : null,
             'url' => url($shortcut['url']),
-            'icons' => [
-                $shortcutIcons
-            ]
-        ];
+            'icons' => $shortcutIcons
+        ], function ($value) {
+            return $value !== null;
+        });
     }
 
     // custom options
