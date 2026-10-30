@@ -1,3 +1,5 @@
+![PWA, a Kirby plugin by oweb studio. Turn your Kirby site into a progressive web app with offline support.](.github/cover.png)
+
 # Kirby PWA
 
 Turns your Kirby site into a progressive web app: a web app manifest, a service worker that keeps your site usable offline, and helpers for an install button and update notices.
