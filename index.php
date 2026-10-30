@@ -29,7 +29,9 @@ Kirby::plugin('owebstudio/pwa', [
     ],
     'snippets' => [
         'pwa' => __DIR__ . '/snippets/pwa.php',
-        'pwa/offline' => __DIR__ . '/snippets/pwa/offline.php'
+        'pwa/install' => __DIR__ . '/snippets/pwa/install.php',
+        'pwa/offline' => __DIR__ . '/snippets/pwa/offline.php',
+        'pwa/update' => __DIR__ . '/snippets/pwa/update.php'
     ],
     'translations' => [
         'de' => require __DIR__ . '/translations/de.php',

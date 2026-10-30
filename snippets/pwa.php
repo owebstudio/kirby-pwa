@@ -36,9 +36,53 @@ $register = $head['register'] + ['debug' => $kirby->option('debug') === true];
 <?php endforeach ?>
 <script nonce="<?= esc($kirby->nonce()) ?>">
   (function (options) {
+    var pwa = window.kirbyPwa = window.kirbyPwa || {};
+
+    function emit(name) {
+      window.dispatchEvent(new CustomEvent('pwa:' + name));
+    }
+
+    // keep the install prompt for an install button
+    window.addEventListener('beforeinstallprompt', function (event) {
+      event.preventDefault();
+      pwa.installPrompt = event;
+      emit('installable');
+    });
+
+    window.addEventListener('appinstalled', function () {
+      pwa.installPrompt = null;
+      emit('installed');
+    });
+
+    pwa.install = function () {
+      var prompt = pwa.installPrompt;
+
+      if (!prompt) {
+        return Promise.resolve('unavailable');
+      }
+
+      pwa.installPrompt = null;
+      prompt.prompt();
+
+      return prompt.userChoice.then(function (choice) {
+        return choice.outcome;
+      });
+    };
+
     if (!('serviceWorker' in navigator)) {
       return;
     }
+
+    // tell the page when a new service worker takes over
+    var controlled = !!navigator.serviceWorker.controller;
+
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      if (controlled) {
+        emit('update');
+      }
+
+      controlled = true;
+    });
 
     navigator.serviceWorker.register(options.script, {
       // resolve the scope like the browser resolves the manifest scope,
@@ -46,6 +90,8 @@ $register = $head['register'] + ['debug' => $kirby->option('debug') === true];
       scope: new URL(options.scope, new URL(options.manifest, location.href)).href,
       updateViaCache: 'none'
     }).then(function (registration) {
+      pwa.registration = registration;
+
       if (options.debug) {
         console.log('Kirby PWA: ServiceWorker registration successful with scope: ', registration.scope);
       }
