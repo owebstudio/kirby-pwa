@@ -44,12 +44,27 @@
       // Initialize the service worker
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('<?= url('serviceworker.js') ?>', {
-          scope: '<?= $manifestOptions['scope'] ?>'
+          // resolve the scope like the browser resolves the manifest scope,
+          // so that every page registers the same scope
+          scope: new URL('<?= $manifestOptions['scope'] ?>', new URL('<?= url('manifest.json') ?>', location.href)).href
         }).then(function (registration) {
             <?php if(option('debug') === true): ?>
           // Registration was successful
           console.log('Kirby PWA: ServiceWorker registration successful with scope: ', registration.scope);
             <?php endif; ?>
+
+          // remove the registrations that earlier versions created per page
+          var current = registration.installing || registration.waiting || registration.active;
+
+          return navigator.serviceWorker.getRegistrations().then(function (registrations) {
+            registrations.forEach(function (item) {
+              var worker = item.active || item.waiting || item.installing;
+
+              if (item.scope !== registration.scope && worker && worker.scriptURL === current.scriptURL) {
+                item.unregister();
+              }
+            });
+          });
         }, function (err) {
             <?php if(option('debug') === true): ?>
           // registration failed :(
