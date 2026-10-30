@@ -1,6 +1,6 @@
 # Kirby PWA
 
-Turns your project into a PWA (progressive web app) for Kirby 3.
+Turns your project into a PWA (progressive web app) for Kirby.
 
 ## What is PWA (Progressive web app)?
 
@@ -41,7 +41,7 @@ return [
         'manifest' => [
             'name' => 'Kirby PWA',
             'short_name' => 'PWA',
-            'description' => 'Turns your project into a PWA (progressive web app) for Kirby 3.',
+            'description' => 'Turns your project into a PWA (progressive web app) for Kirby.',
             'background_color' => '#ffffff',
             'theme_color' => '#000000',
             'display' => 'fullscreen',
