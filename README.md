@@ -88,3 +88,14 @@ You can see the options and default values of the plugin in the table below. The
 All the values can be updated in the `config.php` file and prefixed with `owebstudio.pwa.`.
 
 A string value for `manifest.json` or `serviceworker.js` is the path to your own file, either absolute or relative to the root folder of your site (e.g. `assets/pwa/manifest.json`).
+
+A splash screen can also be an array with its own media query:
+
+```php
+'splash' => [
+    '1170x2532' => [
+        'path' => 'assets/images/icons/splash-1170x2532.png',
+        'media' => '(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)'
+    ],
+],
+```

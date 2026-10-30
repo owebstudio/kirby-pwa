@@ -27,9 +27,7 @@
 
     <?php foreach ($manifestOptions['splash'] ?? [] as $splash): ?>
         <link href="<?= url($splash['src']) ?>"
-            <?php if (empty($splash['media'])): ?>
-                media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)"
-            <?php endif; ?>
+              media="<?= empty($splash['media']) === false ? $splash['media'] : '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)' ?>"
               rel="apple-touch-startup-image"/>
     <?php endforeach; ?>
 
