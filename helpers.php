@@ -9,9 +9,15 @@ use Kirby\Toolkit\I18n;
  * @param null $default
  * @return array|mixed
  */
-function getArrayLastItem(array $array = [], string $key, $default = null)
+function getArrayLastItem(array $array, string $key, $default = null)
 {
-    return A::get(end($array), $key, $default = null);
+    $item = end($array);
+
+    if (is_array($item) === false) {
+        return $default;
+    }
+
+    return A::get($item, $key, $default);
 }
 
 /**

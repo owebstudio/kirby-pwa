@@ -11,15 +11,19 @@
     <!-- Add to homescreen for Chrome on Android -->
     <meta name="mobile-web-app-capable" content="<?= $manifestOptions['display'] === 'standalone' ? 'yes' : 'no' ?>">
     <meta name="application-name" content="<?= $manifestOptions['short_name'] ?>">
+    <?php if (empty($manifestOptions['icons']) === false): ?>
     <link rel="icon"
           sizes="<?= getArrayLastItem($manifestOptions['icons'], 'sizes') ?>"
           href="<?= getArrayLastItem($manifestOptions['icons'], 'src') ?>">
+    <?php endif; ?>
 
     <!-- Add to homescreen for Safari on iOS -->
     <meta name="apple-mobile-web-app-capable" content="<?= $manifestOptions['display'] === 'standalone' ? 'yes' : 'no' ?>">
     <meta name="apple-mobile-web-app-status-bar-style" content="<?= $manifestOptions['status_bar'] ?>">
     <meta name="apple-mobile-web-app-title" content="<?= $manifestOptions['short_name'] ?>">
+    <?php if (empty($manifestOptions['icons']) === false): ?>
     <link rel="apple-touch-icon" href="<?= getArrayLastItem($manifestOptions['icons'], 'src') ?>">
+    <?php endif; ?>
 
     <?php foreach ($manifestOptions['splash'] ?? [] as $splash): ?>
         <link href="<?= url($splash['src']) ?>"
@@ -31,7 +35,9 @@
 
     <!-- Tile for Win8 -->
     <meta name="msapplication-TileColor" content="<?= $manifestOptions['background_color'] ?>">
+    <?php if (empty($manifestOptions['icons']) === false): ?>
     <meta name="msapplication-TileImage" content="<?= getArrayLastItem($manifestOptions['icons'], 'src') ?>">
+    <?php endif; ?>
 
     <!-- Register service worker  -->
     <script type="text/javascript">
