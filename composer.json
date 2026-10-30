@@ -2,7 +2,7 @@
   "name": "owebstudio/kirby-pwa",
   "description": "Turns your project into a PWA (progressive web app) for Kirby.",
   "type": "kirby-plugin",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "license": "MIT",
   "keywords": [
     "owebstudio",
