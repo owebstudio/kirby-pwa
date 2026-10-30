@@ -1,75 +1,117 @@
-<?php if (option('owebstudio.pwa.enable', false) === true): ?>
-    <?php $manifestOptions = $manifestOptions ?? optionsKirbyPwa(); ?>
-    <!-- Start PWA Settings -->
+<?php
 
-    <!-- Web Application Manifest -->
-    <link rel="manifest" href="<?= url('manifest.json') ?>">
+/**
+ * @var \Kirby\Cms\App $kirby
+ */
 
-    <!-- Chrome for Android theme color -->
-    <meta name="theme-color" content="<?= $manifestOptions['theme_color'] ?>">
+use Owebstudio\Pwa\Pwa;
 
-    <!-- Add to homescreen for Chrome on Android -->
-    <meta name="mobile-web-app-capable" content="<?= $manifestOptions['display'] === 'standalone' ? 'yes' : 'no' ?>">
-    <meta name="application-name" content="<?= $manifestOptions['short_name'] ?>">
-    <?php if (empty($manifestOptions['icons']) === false): ?>
-    <link rel="icon"
-          sizes="<?= getArrayLastItem($manifestOptions['icons'], 'sizes') ?>"
-          href="<?= getArrayLastItem($manifestOptions['icons'], 'src') ?>">
-    <?php endif; ?>
+$kirby ??= kirby();
+$pwa = Pwa::instance($kirby);
 
-    <!-- Add to homescreen for Safari on iOS -->
-    <meta name="apple-mobile-web-app-capable" content="<?= $manifestOptions['display'] === 'standalone' ? 'yes' : 'no' ?>">
-    <meta name="apple-mobile-web-app-status-bar-style" content="<?= $manifestOptions['status_bar'] ?>">
-    <meta name="apple-mobile-web-app-title" content="<?= $manifestOptions['short_name'] ?>">
-    <?php if (empty($manifestOptions['icons']) === false): ?>
-    <link rel="apple-touch-icon" href="<?= getArrayLastItem($manifestOptions['icons'], 'src') ?>">
-    <?php endif; ?>
+if ($pwa->isEnabled() === false) {
+    return;
+}
 
-    <?php foreach ($manifestOptions['splash'] ?? [] as $splash): ?>
-        <link href="<?= url($splash['src']) ?>"
-              media="<?= empty($splash['media']) === false ? $splash['media'] : '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)' ?>"
-              rel="apple-touch-startup-image"/>
-    <?php endforeach; ?>
+$head = $pwa->head();
+$register = $head['register'] + ['debug' => $kirby->option('debug') === true];
+?>
+<link rel="manifest" href="<?= esc($head['manifest']) ?>">
+<?php if ($head['themeColor'] !== null): ?>
+<meta name="theme-color" content="<?= esc($head['themeColor']) ?>">
+<?php endif ?>
+<meta name="mobile-web-app-capable" content="<?= $head['capable'] === true ? 'yes' : 'no' ?>">
+<meta name="application-name" content="<?= esc((string)$head['name']) ?>">
+<?php if ($head['icon'] !== null): ?>
+<link<?= attr(['rel' => 'icon', 'href' => $head['icon']['src'], 'type' => $head['icon']['type'] ?? null, 'sizes' => $head['icon']['sizes'] ?? null], ' ') ?>>
+<?php endif ?>
+<meta name="apple-mobile-web-app-capable" content="<?= $head['capable'] === true ? 'yes' : 'no' ?>">
+<meta name="apple-mobile-web-app-status-bar-style" content="<?= esc($head['statusBar']) ?>">
+<meta name="apple-mobile-web-app-title" content="<?= esc((string)$head['name']) ?>">
+<?php if ($head['icon'] !== null): ?>
+<link rel="apple-touch-icon" href="<?= esc($head['icon']['src']) ?>">
+<?php endif ?>
+<?php foreach ($head['splash'] as $splash): ?>
+<link rel="apple-touch-startup-image" href="<?= esc($splash['href']) ?>" media="<?= esc($splash['media']) ?>">
+<?php endforeach ?>
+<script nonce="<?= esc($kirby->nonce()) ?>">
+  (function (options) {
+    var pwa = window.kirbyPwa = window.kirbyPwa || {};
 
-    <!-- Tile for Win8 -->
-    <meta name="msapplication-TileColor" content="<?= $manifestOptions['background_color'] ?>">
-    <?php if (empty($manifestOptions['icons']) === false): ?>
-    <meta name="msapplication-TileImage" content="<?= getArrayLastItem($manifestOptions['icons'], 'src') ?>">
-    <?php endif; ?>
+    function emit(name) {
+      window.dispatchEvent(new CustomEvent('pwa:' + name));
+    }
 
-    <!-- Register service worker  -->
-    <script type="text/javascript">
-      // Initialize the service worker
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('<?= url('serviceworker.js') ?>', {
-          // resolve the scope like the browser resolves the manifest scope,
-          // so that every page registers the same scope
-          scope: new URL('<?= $manifestOptions['scope'] ?>', new URL('<?= url('manifest.json') ?>', location.href)).href
-        }).then(function (registration) {
-            <?php if(option('debug') === true): ?>
-          // Registration was successful
-          console.log('Kirby PWA: ServiceWorker registration successful with scope: ', registration.scope);
-            <?php endif; ?>
+    // keep the install prompt for an install button
+    window.addEventListener('beforeinstallprompt', function (event) {
+      event.preventDefault();
+      pwa.installPrompt = event;
+      emit('installable');
+    });
 
-          // remove the registrations that earlier versions created per page
-          var current = registration.installing || registration.waiting || registration.active;
+    window.addEventListener('appinstalled', function () {
+      pwa.installPrompt = null;
+      emit('installed');
+    });
 
-          return navigator.serviceWorker.getRegistrations().then(function (registrations) {
-            registrations.forEach(function (item) {
-              var worker = item.active || item.waiting || item.installing;
+    pwa.install = function () {
+      var prompt = pwa.installPrompt;
 
-              if (item.scope !== registration.scope && worker && worker.scriptURL === current.scriptURL) {
-                item.unregister();
-              }
-            });
-          });
-        }, function (err) {
-            <?php if(option('debug') === true): ?>
-          // registration failed :(
-          console.log('Kirby PWA: ServiceWorker registration failed: ', err);
-            <?php endif; ?>
-        });
+      if (!prompt) {
+        return Promise.resolve('unavailable');
       }
-    </script>
-    <!-- End PWA Settings -->
-<?php endif; ?>
+
+      pwa.installPrompt = null;
+      prompt.prompt();
+
+      return prompt.userChoice.then(function (choice) {
+        return choice.outcome;
+      });
+    };
+
+    if (!('serviceWorker' in navigator)) {
+      return;
+    }
+
+    // tell the page when a new service worker takes over
+    var controlled = !!navigator.serviceWorker.controller;
+
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      if (controlled) {
+        emit('update');
+      }
+
+      controlled = true;
+    });
+
+    navigator.serviceWorker.register(options.script, {
+      // resolve the scope like the browser resolves the manifest scope,
+      // so that every page registers the same scope
+      scope: new URL(options.scope, new URL(options.manifest, location.href)).href,
+      updateViaCache: 'none'
+    }).then(function (registration) {
+      pwa.registration = registration;
+
+      if (options.debug) {
+        console.log('Kirby PWA: ServiceWorker registration successful with scope: ', registration.scope);
+      }
+
+      // remove the registrations that versions before 1.0.3 created per page
+      var current = registration.installing || registration.waiting || registration.active;
+
+      return navigator.serviceWorker.getRegistrations().then(function (registrations) {
+        registrations.forEach(function (item) {
+          var worker = item.active || item.waiting || item.installing;
+
+          if (item.scope !== registration.scope && worker && worker.scriptURL === current.scriptURL) {
+            item.unregister();
+          }
+        });
+      });
+    }).catch(function (error) {
+      if (options.debug) {
+        console.log('Kirby PWA: ServiceWorker registration failed: ', error);
+      }
+    });
+  })(<?= json_encode($register, JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) ?>);
+</script>
