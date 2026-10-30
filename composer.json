@@ -2,7 +2,7 @@
   "name": "owebstudio/kirby-pwa",
   "description": "Turns your Kirby site into a progressive web app with offline support.",
   "type": "kirby-plugin",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "license": "MIT",
   "keywords": [
     "owebstudio",
