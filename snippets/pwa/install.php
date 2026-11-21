@@ -48,7 +48,7 @@ $class ??= 'pwa-install';
 
     document.addEventListener('click', function (event) {
       if (event.target.closest('[data-pwa-install]')) {
-        pwa.install().then(update);
+        pwa.install().then(update, update);
       }
     });
 
