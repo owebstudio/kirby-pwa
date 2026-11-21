@@ -5,10 +5,10 @@ namespace Owebstudio\Pwa;
 use Closure;
 use Kirby\Cms\App;
 use Kirby\Cms\Page;
+use Kirby\Cms\Url;
 use Kirby\Data\Json;
 use Kirby\Filesystem\F;
 use Kirby\Http\Response;
-use Kirby\Http\Url;
 use Kirby\Toolkit\I18n;
 
 /**
