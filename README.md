@@ -134,7 +134,7 @@ The `pwa` snippet adds a small `window.kirbyPwa` object and fires events on `win
 | `pwa:installable` | The browser allows the installation |
 | `pwa:installed` | The site was installed |
 | `pwa:update` | A new service worker took over this page |
-| `kirbyPwa.install()` | Shows the install prompt. Returns a promise with `accepted`, `dismissed` or `unavailable`. |
+| `kirbyPwa.install()` | Shows the install prompt. Call it from a click or another user action. Returns a promise with `accepted`, `dismissed` or `unavailable`, which is rejected when the browser refuses to show the prompt. |
 | `kirbyPwa.installPrompt` | The install prompt event, or `null` |
 | `kirbyPwa.registration` | The service worker registration |
 

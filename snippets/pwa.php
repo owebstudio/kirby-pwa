@@ -61,10 +61,20 @@ $register = $head['register'] + ['debug' => $kirby->option('debug') === true];
         return Promise.resolve('unavailable');
       }
 
-      pwa.installPrompt = null;
-      prompt.prompt();
+      // browsers only show the prompt after a user action;
+      // when they refuse, the prompt stays for the next try
+      var shown;
 
-      return prompt.userChoice.then(function (choice) {
+      try {
+        shown = Promise.resolve(prompt.prompt());
+      } catch (error) {
+        shown = Promise.reject(error);
+      }
+
+      return shown.then(function () {
+        pwa.installPrompt = null;
+        return prompt.userChoice;
+      }).then(function (choice) {
         return choice.outcome;
       });
     };
